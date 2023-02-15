@@ -20,7 +20,7 @@ library(ggthemes)
 library(esquisse)
 
 #import data
-county_pop <-  read_xlsx('county_pop.xlsx') %>% 
+county_pop <- read_excel("data/county_pop.xlsx") %>% 
   clean_names()
 
 
@@ -39,6 +39,7 @@ metro_pop <- county_pop %>%
 ```
 
 Let's take a look at our data
+
 ```{r}
 
 metro_pop
@@ -48,6 +49,7 @@ metro_pop
 # Basics of ggplot2
 
 Basic column/bar chart
+
 ```{r}
 
 ggplot(metro_pop, aes(x = geography, y = pop_estimate2016)) +
@@ -56,6 +58,7 @@ ggplot(metro_pop, aes(x = geography, y = pop_estimate2016)) +
 ```
 
 Convert to horizontal lines
+
 ```{r}
 
 ggplot(metro_pop, aes(x = geography, y = pop_estimate2016)) +
@@ -64,8 +67,7 @@ ggplot(metro_pop, aes(x = geography, y = pop_estimate2016)) +
 
 ```
 
-
-Sorting by values and changing colors.  
+Sorting by values and changing colors.\
 Color is for the outline; fill is inside the bars.
 
 ```{r}
@@ -77,6 +79,7 @@ ggplot(metro_pop, aes(x = reorder(geography, pop_estimate2016), y = pop_estimate
 ```
 
 Use colorbrewer2.org to get better colors
+
 ```{r}
 
 ggplot(metro_pop, aes(x = reorder(geography, pop_estimate2016), y = pop_estimate2016)) + 
@@ -85,11 +88,10 @@ ggplot(metro_pop, aes(x = reorder(geography, pop_estimate2016), y = pop_estimate
 
 ```
 
-improve the axis titles and labels
-https://ggplot2.tidyverse.org/reference/scale_continuous.html
-note: the Y axis is along the bottom because this is flipped
+improve the axis titles and labels https://ggplot2.tidyverse.org/reference/scale_continuous.html note: the Y axis is along the bottom because this is flipped
 
 we'll use the scales package here for the comma function
+
 ```{r}
 
 ggplot(metro_pop, aes(x = reorder(geography, pop_estimate2016), y = pop_estimate2016)) + 
@@ -99,7 +101,8 @@ ggplot(metro_pop, aes(x = reorder(geography, pop_estimate2016), y = pop_estimate
   scale_x_discrete(name = "County")
 ```
 
-Add titles 
+Add titles
+
 ```{r}
 
 ggplot(metro_pop, aes(x = reorder(geography, pop_estimate2016), y = pop_estimate2016)) + 
@@ -109,11 +112,11 @@ ggplot(metro_pop, aes(x = reorder(geography, pop_estimate2016), y = pop_estimate
   scale_x_discrete(name = "County") +
   labs(title = "Twin Cities metro county population", 
        subtitle = "2016",
-       caption = "Source: U.S. Census Bureau")
+       caption = "Source: U.S. Census Bureau") 
+
 ```
 
-use a theme from the ggthemes library
-High charts theme
+use a theme from the ggthemes library High charts theme
 
 ```{r}
 
@@ -143,14 +146,12 @@ ggplot(metro_pop, aes(x = reorder(geography, pop_estimate2016), y = pop_estimate
   theme_fivethirtyeight()
 ```
 
-
-
 # Part 2
 
 We'll look at opiate death data.
 
 ```{r}
-deaths <- read_csv('opiate_deaths.csv',
+deaths <- read_csv('data/opiate_deaths.csv',
                    col_types=cols(.default=col_character(),
                         BIRTHDATE=col_date("%m/%d/%Y"),
                         DEATHDATE=col_date("%m/%d/%Y"),
@@ -163,6 +164,7 @@ head(deaths)
 ```
 
 Group by year.
+
 ```{r}
 deaths_by_year <- deaths %>% 
   group_by(yr = year(deathdate)) %>% 
@@ -172,22 +174,23 @@ deaths_by_year
 ```
 
 Basic line chart
+
 ```{r}
 
 ggplot(deaths_by_year, aes(x = yr, y = numdeaths)) + 
   geom_line()
 ```
 
-
 Change color and size of the line
+
 ```{r}
 
 ggplot(deaths_by_year, aes(x = yr, y = numdeaths)) + 
   geom_line(color="#2ca25f", size=1)
 ```
 
-
 Fix the axis values and labels
+
 ```{r}
 
 ggplot(deaths_by_year, aes(x = yr, y = numdeaths)) + 
@@ -197,6 +200,7 @@ ggplot(deaths_by_year, aes(x = yr, y = numdeaths)) +
 ```
 
 Add labels and theme
+
 ```{r}
 
 ggplot(deaths_by_year, aes(x = yr, y = numdeaths)) + 
@@ -210,6 +214,7 @@ ggplot(deaths_by_year, aes(x = yr, y = numdeaths)) +
 ```
 
 Grouped bar chart
+
 ```{r}
 
 
@@ -227,6 +232,7 @@ ggplot(deaths_yr_gender) +
 ```
 
 Stacked bar chart
+
 ```{r}
 
 ggplot(deaths_yr_gender, aes(x = yr, y = numdeaths, fill = gender)) +
@@ -236,6 +242,7 @@ ggplot(deaths_yr_gender, aes(x = yr, y = numdeaths, fill = gender)) +
 ```
 
 Export a chart
+
 ```{r}
 
 mychart <- ggplot(deaths_yr_gender, aes(x = yr, y = numdeaths, fill = gender)) +
@@ -248,4 +255,3 @@ mychart
 ggsave("deaths_by_gender.jpg", mychart, width=8, height=5, units="in", dpi="print")
 
 ```
-

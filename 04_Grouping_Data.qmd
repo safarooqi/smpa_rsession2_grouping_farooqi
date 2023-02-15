@@ -113,7 +113,7 @@ So let's do that simply by using the `=` (single this time, note) to assign a na
 
 srqflights %>% 
   group_by(carrier, flight, origin) %>% 
-  summarise(count = n())
+  summarise(count = n()) 
 
 ```
 
@@ -158,9 +158,8 @@ So we can easily handle that by adding an argument to calculate the average rega
 
 ```{r}
 
-srqflights %>% 
-  filter(month == 1) %>% 
-  group_by(carrier, flight, origin) %>% 
+srqflights %>%
+  group_by(month, carrier, flight, origin) %>% 
   summarise(avg_delay = mean(dep_delay, na.rm = TRUE))
 
 ```
@@ -214,6 +213,22 @@ We now have a lot more information at our fingertips than we did a few minutes a
 
 ```{r}
 
+flights <- nycflights13::flights
+
+DCA_Delays = flights %>% 
+  filter(dest=="DCA") %>% 
+  filter(dep_delay >= 0) %>% 
+  group_by(carrier) %>% 
+  summarize(avg_delay = mean(dep_delay, na.rm = TRUE))
+
+```
+
+
+```{r}
+
+srqflights <- srqflights %>% 
+  mutate(is_delay = if_else(dep_delay > 0 , "YES", "NO"))
+ 
 
 
 ```
@@ -221,22 +236,25 @@ We now have a lot more information at our fingertips than we did a few minutes a
 
 ```{r}
 
-
-
-```
-
-
-```{r}
-
-
+srqflights %>% 
+  group_by(is_delay) %>% 
+  summarise(flight_count = n()) %>% 
+  mutate(pct = flight_count / sum(flight_count) *100)
 
 ```
 
 
 ```{r}
 
-
-
+ggplot(DCA_Delays, aes(x = carrier, y = avg_delay)) + 
+  geom_col(color = "#9ebcda", fill = "#9ebcda") +
+  coord_flip() +
+  scale_y_continuous(name = "Average Delay Time") +
+  scale_x_discrete(name = "Airline Carrier") +
+  labs(title = "NYC Average Flight Delays", 
+       subtitle = "2013",
+       caption = "Source: U.S. Census Bureau") +
+  theme()
 ```
 
 
